@@ -1,13 +1,12 @@
-package com.example.MyProject.rest;
+package com.jb.MyProject.rest;
 
-import com.example.MyProject.entity.Coupon;
-import com.example.MyProject.exceptions.NoSuchCompanyException;
-import com.example.MyProject.exceptions.NoSuchCouponException;
-import com.example.MyProject.repository.CouponRepository;
-import com.example.MyProject.service.CompanyService;
+import com.jb.MyProject.entity.Coupon;
+import com.jb.MyProject.repository.CouponRepository;
+import com.jb.MyProject.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 
 @Component
@@ -23,6 +22,7 @@ public class DailyTask implements Runnable {
         this.couponRepo = couponRepo;
         this.context = context;
     }
+
     @Override
     public void run() {
         isWorking = true;
@@ -34,8 +34,8 @@ public class DailyTask implements Runnable {
                 if (LocalDate.now().isAfter(endDate)) {
                     CompanyService companyService = context.getBean(CompanyService.class);
                     try {
-                        companyService.deleteCouponById(coupon_id);
-                    } catch (NoSuchCouponException | NoSuchCompanyException e) {
+//                        companyService.deleteCouponById(coupon_id);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -47,6 +47,7 @@ public class DailyTask implements Runnable {
             }
         }
     }
+
     public static void stopDailyTask() {
         isWorking = false;
     }

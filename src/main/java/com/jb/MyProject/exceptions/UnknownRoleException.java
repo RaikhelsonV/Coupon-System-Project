@@ -1,4 +1,4 @@
-package com.example.MyProject.exceptions;
+package com.jb.MyProject.exceptions;
 
 public class UnknownRoleException extends Exception {
     public UnknownRoleException(String msg) {

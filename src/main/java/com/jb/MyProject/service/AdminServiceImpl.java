@@ -1,14 +1,14 @@
-package com.example.MyProject.service;
+package com.jb.MyProject.service;
 
-import com.example.MyProject.entity.Company;
-import com.example.MyProject.entity.Coupon;
-import com.example.MyProject.entity.Customer;
-import com.example.MyProject.entity.User;
-import com.example.MyProject.exceptions.*;
-import com.example.MyProject.repository.CompanyRepository;
-import com.example.MyProject.repository.CouponRepository;
-import com.example.MyProject.repository.CustomerRepository;
-import com.example.MyProject.repository.UserRepository;
+import com.jb.MyProject.entity.Company;
+import com.jb.MyProject.entity.Coupon;
+import com.jb.MyProject.entity.Customer;
+import com.jb.MyProject.entity.User;
+import com.jb.MyProject.exceptions.*;
+import com.jb.MyProject.repository.CompanyRepository;
+import com.jb.MyProject.repository.CouponRepository;
+import com.jb.MyProject.repository.CustomerRepository;
+import com.jb.MyProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -33,17 +33,98 @@ public class AdminServiceImpl implements AdminService {
         this.couponRepository = couponRepository;
     }
 
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<Company> getAllCompanies() {
+        return companyRepository.findAll();
+    }
 
 
     @Override
-    public Company createCompany(String email, String password, String name) throws NoSuchUserException, UnknownRoleException {
+    public List<Coupon> getAllCoupons() {
+        return couponRepository.findAll();
+    }
+
+    @Override
+    public Customer removeCustomer(long customerId) throws NoSuchCustomerException {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            customerRepository.delete(customer);
+            return customer;
+        }
+        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customerId));
+    }
+
+    @Override
+    public Company removeCompany(long companyId) throws NoSuchCompanyException {
+        Optional<Company> optionalCompany = companyRepository.findById(companyId);
+        if (optionalCompany.isPresent()) {
+            Company company = optionalCompany.get();
+            companyRepository.delete(company);
+            return company;
+        }
+        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", companyId));
+    }
+
+    @Override
+    public Company removeUserCompany(long companyId) {
+        List<User> users = userRepository.findAll();
+        Optional<Company> optionalCompany = companyRepository.findById(companyId);
+        for (User user : users) {
+            long id = user.getId();
+            if (user.getClient() instanceof Company) {
+                Optional<User> optionalUser = userRepository.findById(id);
+                if (optionalUser.isPresent()) {
+                    userRepository.delete(optionalUser.get());
+                }
+                if (optionalCompany.isPresent()) {
+                    Company company = optionalCompany.get();
+                    companyRepository.delete(company);
+                }
+            }
+        }
+        return optionalCompany.get();
+    }
+
+    @Override
+    public Customer removeUserCustomer(long customerId) {
+        List<User> users = userRepository.findAll();
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        for (User user : users) {
+            long id = user.getId();
+            if (user.getClient() instanceof Customer) {
+                Optional<User> optionalUser = userRepository.findById(id);
+                if (optionalUser.isPresent()) {
+                    userRepository.delete(optionalUser.get());
+                }
+                if (optionalCustomer.isPresent()) {
+                    Customer customer = optionalCustomer.get();
+                    customerRepository.delete(customer);
+                }
+            }
+        }
+        return optionalCustomer.get();
+    }
+
+    @Override
+    public Company createCompany(String email, String password, String companyName) throws NoSuchUserException, UnknownRoleException {
         Optional<User> optUser = userRepository.findByEmailAndPassword(email, password);
         if (optUser.isPresent()) {
             throw new NoSuchUserException(String.format("User with such email %s is already exist.", email));
         }
         User user = new User(email, password, 2);
         Company company = new Company();
-        companyRepository.save((Company)user.getClient());
+        companyRepository.save((Company) user.getClient());
         companyRepository.save(company);
         return company;
     }
@@ -52,6 +133,7 @@ public class AdminServiceImpl implements AdminService {
     public Customer addCustomer(Customer customer) {
         return null;
     }
+
     @Override
     public Company updateCompany(long id, Company company) throws NoSuchCompanyException {
         Optional<Company> optionalCompany = companyRepository.findById(id);
@@ -65,17 +147,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Company removeCompany(long company_id) throws NoSuchCompanyException {
-        Optional<Company> optionalCompany = companyRepository.findById(company_id);
-        if (optionalCompany.isPresent()) {
-            Company company = optionalCompany.get();
-            companyRepository.delete(company);
-            return company;
-        }
-        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", company_id));
-    }
-
-    @Override
     public Customer updateCustomer(long id, Customer customer) throws NoSuchCustomerException {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (optionalCustomer.isPresent()) {
@@ -85,17 +156,6 @@ public class AdminServiceImpl implements AdminService {
             return customerRepository.save(existCustomer);
         }
         throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", id));
-    }
-
-    @Override
-    public Customer removeCustomer(long customer_id) throws NoSuchCustomerException {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customer_id);
-        if (optionalCustomer.isPresent()) {
-            Customer customer = optionalCustomer.get();
-            customerRepository.delete(customer);
-            return customer;
-        }
-        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customer_id));
     }
 
     @Override
@@ -117,67 +177,45 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Coupon removeCoupon(long coupon_id) throws NoSuchCouponException {
-        Optional<Coupon> optionalCoupon = couponRepository.findById(coupon_id);
+    public Coupon removeCoupon(long couponId) throws NoSuchCouponException {
+        Optional<Coupon> optionalCoupon = couponRepository.findById(couponId);
         if (optionalCoupon.isPresent()) {
             Coupon coupon = optionalCoupon.get();
             couponRepository.delete(coupon);
             return coupon;
         }
-        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", coupon_id));
+        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", couponId));
     }
 
-
     @Override
-    public Customer getCustomer(long customer_id) throws NoSuchCustomerException {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customer_id);
+    public Customer getCustomer(long customerId) throws NoSuchCustomerException {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
         if (optionalCustomer.isPresent()) {
             return optionalCustomer.get();
         }
-        throw new NoSuchCustomerException(String.format("There is noc customer with this id:%d", customer_id));
+        throw new NoSuchCustomerException(String.format("There is noc customer with this id:%d", customerId));
     }
 
-    @Override
-    public List<Coupon> getAllCoup() {
-        return couponRepository.findAll();
-    }
-    @Override
-    public List<Company> getAllComp() {
-        return companyRepository.findAll();
-    }
-    @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
-    }
-
-    /*general info*/
-    @Override
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll();
-    }
 
     @Override
-    public List<Coupon> getAllCoupons() {
-        return couponRepository.findAll();
-    }
-
-    @Override
-    public Company getCompany(long company_id) throws NoSuchCompanyException {
-        Optional<Company> optionalCompany = companyRepository.findById(company_id);
+    public Company getCompany(long companyId) throws NoSuchCompanyException {
+        Optional<Company> optionalCompany = companyRepository.findById(companyId);
         if (optionalCompany.isPresent()) {
             return optionalCompany.get();
         }
-        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", company_id));
+        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", companyId));
     }
 
     @Override
-    public Coupon getCoupon(long coupon_id) throws NoSuchCouponException {
-        Optional<Coupon> optionalCoupon = couponRepository.findById(coupon_id);
+    public Coupon getCoupon(long couponId) throws NoSuchCouponException {
+        Optional<Coupon> optionalCoupon = couponRepository.findById(couponId);
         if (optionalCoupon.isPresent()) {
             return optionalCoupon.get();
         }
-        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", coupon_id));
+        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", couponId));
     }
+
+
 }
 
 

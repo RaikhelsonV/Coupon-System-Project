@@ -1,9 +1,8 @@
-package com.example.MyProject.rest;
+package com.jb.MyProject.entity;
 
-
-import com.example.MyProject.service.AdminService;
-import com.example.MyProject.service.CompanyService;
-import com.example.MyProject.service.CustomerService;
+import com.jb.MyProject.service.AdminService;
+import com.jb.MyProject.service.CompanyService;
+import com.jb.MyProject.service.CustomerService;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ClientSession {
-
     private long lastAccessedMillis;
     private AdminService adminService;
     private CustomerService customerService;
@@ -21,6 +19,7 @@ public class ClientSession {
     public CustomerService getCustomerService() {
         return customerService;
     }
+
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
     }
@@ -28,6 +27,7 @@ public class ClientSession {
     public CompanyService getCompanyService() {
         return companyService;
     }
+
     public void setCompanyService(CompanyService companyService) {
         this.companyService = companyService;
     }
@@ -35,6 +35,7 @@ public class ClientSession {
     public AdminService getAdminService() {
         return adminService;
     }
+
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
     }
@@ -42,6 +43,7 @@ public class ClientSession {
     public long getLastAccessedMillis() {
         return lastAccessedMillis;
     }
+
     public void accessed() {
         this.lastAccessedMillis = System.currentTimeMillis();
     }

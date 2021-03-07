@@ -1,14 +1,14 @@
-package com.example.MyProject.entity;
+package com.jb.MyProject.entity;
 
-import com.example.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.MyProject.entity.Client.NO_ID;
+import static com.jb.MyProject.entity.Client.NO_ID;
 
 @Entity
 @Table(name = "coupon")
@@ -36,7 +36,7 @@ public class Coupon {
     private String imageURL;
 
     public Coupon() {
-       this.customers = new ArrayList<>();
+        this.customers = new ArrayList<>();
     }
 
     public void addCustomer(Customer customer) throws AlreadyPurchaseCouponException {
@@ -45,11 +45,11 @@ public class Coupon {
         } else throw new AlreadyPurchaseCouponException("Sold out!");
     }
 
-    public Coupon(long id){
-        this.id=id;
+    public Coupon(long id) {
+        this.id = id;
     }
 
-    public static Coupon empty(){
+    public static Coupon empty() {
         return new Coupon(NO_ID);
     }
 
@@ -74,7 +74,8 @@ public class Coupon {
         company.setId(company_id);
         this.company = company;
     }
-    public long getCompanyId(){
+
+    public long getCompanyId() {
         return company.getId();
     }
 
@@ -157,6 +158,7 @@ public class Coupon {
                 && this.getDescription().equals(coupon.getDescription())
                 && this.getImageURL().equals(coupon.getImageURL());
     }
+
     @Override
     public String toString() {
         return "Coupon{" +

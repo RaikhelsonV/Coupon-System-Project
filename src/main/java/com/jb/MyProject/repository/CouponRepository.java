@@ -1,6 +1,6 @@
-package com.example.MyProject.repository;
+package com.jb.MyProject.repository;
 
-import com.example.MyProject.entity.Coupon;
+import com.jb.MyProject.entity.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,17 +9,28 @@ import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Coupon findExistById(long id);
-    List<Coupon> findAllByCompanyName(String name);
-    List<Coupon> findAllByDescription(String description);
-    List<Coupon> findAllByTitle(String title);
-    List<Coupon> findAllByCategory(String category);
-    List<Coupon> findAllByPriceLessThan(double price);
-    List<Coupon> findAllByPriceIsGreaterThan(double price);
-    List<Coupon> findAllByPriceBetween(double fromPrice, double toPrice);
-    List<Coupon> findAllByEndDate(LocalDate date);
-    List<Coupon> findAllByStartDate(LocalDate date);
 
-    void deleteById(long id_coupon);
+    List<Coupon> findAllByCompanyName(String companyName);
+
+    List<Coupon> findAllByDescription(String description);
+
+    List<Coupon> findAllByTitle(String title);
+
+    List<Coupon> findAllByCategory(String category);
+
+    List<Coupon> findAllByPriceLessThan(double price);
+
+    List<Coupon> findAllByPriceIsGreaterThan(double price);
+
+    List<Coupon> findAllByPriceBetween(double fromPrice, double toPrice);
+
+    List<Coupon> findAllByEndDate(LocalDate endDate);
+
+    List<Coupon> findAllByStartDate(LocalDate startDate);
+
+    List<Coupon> findAll();
+
+    void deleteById(long id);
 
     @Query("select coupon from Customer as customer join customer.coupons as coupon where customer.id=:customer_id")
     List<Coupon> findAllByCustomerId(long customer_id);

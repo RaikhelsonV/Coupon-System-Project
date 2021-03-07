@@ -1,6 +1,6 @@
-package com.example.MyProject.entity;
+package com.jb.MyProject.entity;
 
-import com.example.MyProject.exceptions.AlreadyPurchaseCouponException;
+import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Table(name = "customer")
 public class Customer extends Client {
-
     private String firstName;
     private String lastName;
 
@@ -26,6 +25,7 @@ public class Customer extends Client {
     public Customer(long id) {
         setId(id);
     }
+
     public static Customer empty() {
         return new Customer(NO_ID);
     }
@@ -38,6 +38,7 @@ public class Customer extends Client {
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -45,6 +46,7 @@ public class Customer extends Client {
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -55,5 +57,14 @@ public class Customer extends Client {
 
     public void setCoupons(List<Coupon> coupons) {
         this.coupons = coupons;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", coupons=" + coupons +
+                '}';
     }
 }

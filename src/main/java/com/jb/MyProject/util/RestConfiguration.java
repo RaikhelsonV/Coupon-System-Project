@@ -1,5 +1,6 @@
-package com.example.MyProject.rest;
+package com.jb.MyProject.util;
 
+import com.jb.MyProject.entity.ClientSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,8 +12,8 @@ import java.util.Map;
 
 @Configuration
 public class RestConfiguration {
-    @Bean(name="tokens")
-    public Map<String, ClientSession> tokensMap(){
+    @Bean(name = "tokens")
+    public Map<String, ClientSession> tokensMap() {
         return new HashMap<>();
     }
 

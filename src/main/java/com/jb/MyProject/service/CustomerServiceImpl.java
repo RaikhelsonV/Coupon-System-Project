@@ -1,12 +1,12 @@
-package com.example.MyProject.service;
+package com.jb.MyProject.service;
 
-import com.example.MyProject.entity.Coupon;
-import com.example.MyProject.entity.Customer;
-import com.example.MyProject.exceptions.AlreadyPurchaseCouponException;
-import com.example.MyProject.exceptions.NoSuchCouponException;
-import com.example.MyProject.exceptions.NoSuchCustomerException;
-import com.example.MyProject.repository.CouponRepository;
-import com.example.MyProject.repository.CustomerRepository;
+import com.jb.MyProject.entity.Coupon;
+import com.jb.MyProject.entity.Customer;
+import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
+import com.jb.MyProject.exceptions.NoSuchCouponException;
+import com.jb.MyProject.exceptions.NoSuchCustomerException;
+import com.jb.MyProject.repository.CouponRepository;
+import com.jb.MyProject.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CustomerServiceImpl implements CustomerService {
 
-    private long customer_id;
+    private long customerId;
     private CustomerRepository customerRepository;
     private CouponRepository couponRepository;
 
@@ -30,24 +30,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void setCustomer_id(long customer_id) {
-        this.customer_id = customer_id;
+    public void setCustomerId(long customerId) {
+        this.customerId = customerId;
     }
 
     @Override
-    public Customer getCustomer() {
+    public Customer getCustomer() throws NoSuchCustomerException {
         Customer customer = new Customer();
-        customer.setId(customer_id);
-        return customer;
-    }
-
-    @Override
-    public Customer getCustomerById(long customer_id) throws NoSuchCustomerException {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customer_id);
+        customer.setId(customerId);
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
         if (optionalCustomer.isPresent()) {
             return optionalCustomer.get();
         }
-        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customer_id));
+        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customerId));
+    }
+
+    @Override
+    public Customer getCustomerById(long customerId) throws NoSuchCustomerException {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        if (optionalCustomer.isPresent()) {
+            return optionalCustomer.get();
+        }
+        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customerId));
     }
 
     @Override
@@ -56,26 +60,27 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(long id, Customer customer) throws NoSuchCustomerException {
-        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+    public Customer updateCustomer(Customer customer) throws NoSuchCustomerException {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
         if (optionalCustomer.isPresent()) {
             Customer existCustomer = optionalCustomer.get();
             existCustomer.setFirstName(customer.getFirstName());
             existCustomer.setLastName(customer.getLastName());
             return customerRepository.save(existCustomer);
         }
-        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", id));
+        throw new NoSuchCustomerException(String.format("There is no customer with this id:%d", customer.getId()));
     }
+
     @Override
-    public Coupon toUseCoupon(long coupon_id) throws NoSuchCouponException {
-        Coupon coupon = getCoupon(coupon_id);
-        List<Coupon> coupons = couponRepository.findAllByCustomerId(customer_id);
-        Optional<Customer> optCustomer = customerRepository.findById(customer_id);
+    public Coupon toUseCoupon(long couponId) throws NoSuchCouponException {
+        Coupon coupon = getCoupon(couponId);
+        List<Coupon> coupons = couponRepository.findAllByCustomerId(customerId);
+        Optional<Customer> optCustomer = customerRepository.findById(customerId);
         if (coupons.contains(coupon) && optCustomer.isPresent()) {
             Customer customer = optCustomer.get();
             coupon.getCustomers().remove(customer); //delete customer from customer's list of specified coupon
             couponRepository.save(coupon);
-            coupons.remove(getCoupon(coupon_id)); //delete coupon from list coupons that belongs to customer
+            coupons.remove(getCoupon(couponId)); //delete coupon from list coupons that belongs to customer
             customer.setCoupons(coupons);
             customerRepository.save(customer);
             System.out.println("Coupon was released successfully!");
@@ -86,54 +91,77 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Coupon purchaseCoupon(long coupon_id) throws NoSuchCouponException, AlreadyPurchaseCouponException {
-        Optional<Coupon> optCoupon = couponRepository.findById(coupon_id);
-        Optional<Customer> optCustomer = customerRepository.findById(this.customer_id);
-        Coupon coupon;
-        Customer customer;
-
+    public Coupon purchaseCoupon(long couponId) throws NoSuchCouponException, AlreadyPurchaseCouponException {
+        Optional<Coupon> optCoupon = couponRepository.findById(couponId);
+        Optional<Customer> optCustomer = customerRepository.findById(this.customerId);
         if (optCoupon.isPresent() && optCustomer.isPresent()) {
-            coupon = optCoupon.get();
-            customer = optCustomer.get();
+            Coupon coupon = optCoupon.get();
+            Customer customer = optCustomer.get();
 
             for (Coupon c : customer.getCoupons()) {
                 if (coupon.getId() == c.getId()) {
                     throw new AlreadyPurchaseCouponException(String.format(
-                            "You already have coupon with id#%d", coupon_id));
+                            "You already have coupon with id#%d", couponId));
                 }
             }
 
             customer.add(coupon);         /*  add is adding as well customer to coupon's List of Customers*/
-            coupon.setAmount(coupon.getAmount()-1); /*-1 coupon to the coupon's repository*/
+            coupon.setAmount(coupon.getAmount() - 1); /*-1 coupon to the coupon's repository*/
             couponRepository.save(coupon);
             customerRepository.save(customer);    /*saving new owner of the coupon to the customer's repository*/
             return coupon;
 
         }
-        throw new NoSuchCouponException(String.format("Couldn't find coupon with such id #%d.", coupon_id));
+        throw new NoSuchCouponException(String.format("Couldn't find coupon with such id #%d.", couponId));
+    }
+
+    @Override
+    public Coupon addAmountCouponsInShoppingBag(long id, int amountShoppingBag) throws NoSuchCouponException {
+        Optional<Coupon> optionalCoupon = couponRepository.findById(id);
+        if (!optionalCoupon.isPresent()) {
+            throw new NoSuchCouponException(String.format("There is no coupon with such id: " + id));
+        }
+        Coupon coupon = optionalCoupon.get();
+        coupon.setAmount(coupon.getAmount() - amountShoppingBag);
+        couponRepository.save(coupon);
+        return coupon;
     }
 
     @Override
     public List<Coupon> getAllCustomerCoupons() {
-        return couponRepository.findAllByCustomerId(customer_id);
+        return couponRepository.findAllByCustomerId(customerId);
+    }
+
+    @Override
+    public long getAllCustomerCouponsTotalPrice() {
+        List<Coupon> coupons = couponRepository.findAllByCustomerId(customerId);
+        long sum = 0;
+        for (int i = 0; i < coupons.size(); i++) {
+            sum += (long) (coupons.get(i).getPrice());
+        }
+        return sum;
     }
 
     /*general info*/
 
     @Override
-    public Coupon getCoupon(long coupon_id) throws NoSuchCouponException {
-        Optional<Coupon> optionalCoupon = couponRepository.findById(coupon_id);
+    public Coupon getCoupon(long couponId) throws NoSuchCouponException {
+        Optional<Coupon> optionalCoupon = couponRepository.findById(couponId);
         if (optionalCoupon.isPresent()) {
             return optionalCoupon.get();
         }
-        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d",coupon_id));
+        throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", couponId));
     }
+
     @Override
     public List<Coupon> getAllCouponsByCategory(String category) {
-        return couponRepository.findAllByCategory(category); }
+        return couponRepository.findAllByCategory(category);
+    }
+
     @Override
     public List<Coupon> getAllCouponsByPriceLessThan(double price) {
-        return couponRepository.findAllByPriceLessThan(price); }
+        return couponRepository.findAllByPriceLessThan(price);
+    }
 
     @Override
     public List<Coupon> getAllByPriceIsGreaterThan(double price) {
@@ -142,10 +170,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Coupon> getAllCouponsByTittle(String title) {
-        return couponRepository.findAllByTitle(title); }
+        return couponRepository.findAllByTitle(title);
+    }
+
     @Override
     public List<Coupon> getAllCouponsByDescriptionLike(String description) {
-        return couponRepository.findAllByDescription(description); }
+        return couponRepository.findAllByDescription(description);
+    }
 
 
 }

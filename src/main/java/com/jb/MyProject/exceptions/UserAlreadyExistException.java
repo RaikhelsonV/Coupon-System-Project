@@ -1,4 +1,4 @@
-package com.example.MyProject.exceptions;
+package com.jb.MyProject.exceptions;
 
 public class UserAlreadyExistException extends Exception {
     public UserAlreadyExistException(String msg) {

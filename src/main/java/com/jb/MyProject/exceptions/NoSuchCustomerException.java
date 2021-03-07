@@ -1,4 +1,4 @@
-package com.example.MyProject.exceptions;
+package com.jb.MyProject.exceptions;
 
 public class NoSuchCustomerException extends Exception {
     public NoSuchCustomerException(String msg) {

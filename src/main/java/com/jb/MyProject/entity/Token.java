@@ -1,27 +1,26 @@
-package com.example.MyProject.entity;
+package com.jb.MyProject.entity;
 
 import java.util.UUID;
 
 public class Token {
-
-    private String token="";
-
     private static final int LENGTH_TOKEN = 15;
+    private String token = "";
 
-    public Token(){
+    public Token() {
     }
 
-    public  String getToken(){
+    public String getToken() {
         return token;
     }
-    public  void  setToken(String token){
+
+    public void setToken(String token) {
         this.token = token;
     }
 
     public static String generateToken() {
         return UUID.randomUUID()
                 .toString()
-                .replaceAll("-","")
+                .replaceAll("-", "")
                 .substring(0, LENGTH_TOKEN);
     }
 

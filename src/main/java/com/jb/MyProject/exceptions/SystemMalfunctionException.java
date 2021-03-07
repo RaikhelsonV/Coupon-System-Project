@@ -1,4 +1,4 @@
-package com.example.MyProject.exceptions;
+package com.jb.MyProject.exceptions;
 
 public class SystemMalfunctionException extends Exception {
     public SystemMalfunctionException(String msg) {

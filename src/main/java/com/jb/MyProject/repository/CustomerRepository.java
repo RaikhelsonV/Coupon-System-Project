@@ -1,14 +1,16 @@
-package com.example.MyProject.repository;
+package com.jb.MyProject.repository;
 
-import com.example.MyProject.entity.Customer;
+import com.jb.MyProject.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CustomerRepository extends JpaRepository <Customer, Long>{
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Customer findByLastName(String lastName);
+
     Optional<Customer> findByFirstName(String firstName);
-    List<Customer> findAllCustomersByCoupons(long coupon_id);
+
+    List<Customer> findAllCustomersByCoupons(long couponId);
 
 }

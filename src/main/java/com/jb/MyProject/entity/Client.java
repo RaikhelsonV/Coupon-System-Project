@@ -1,14 +1,11 @@
 package com.example.MyProject.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class Client {
 
-    public static final int NO_ID = -1;
+    static final int NO_ID = -1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,8 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "company")
@@ -23,7 +22,6 @@ public class Company extends Client{
     }
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-
     private List<Coupon> coupons;
 
     public Company() {

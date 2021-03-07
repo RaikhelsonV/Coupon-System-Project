@@ -1,4 +1,4 @@
-package com.example.MyProject.rest.response;
+package com.jb.MyProject.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,7 @@ public class SimpleCORSFilter implements Filter {
     public SimpleCORSFilter() {
         log.info("SimpleCORSFilter init");
     }
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
@@ -29,17 +30,16 @@ public class SimpleCORSFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
         chain.doFilter(req, res);
     }
+
     @Override
     public void init(FilterConfig filterConfig) {
     }
+
     @Override
     public void destroy() {
     }
+
 }
-
-
-
-
-

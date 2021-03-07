@@ -24,7 +24,7 @@ public class CustomerController {
     private Map<String, ClientSession> tokensMap;
 
     @Autowired
-    public CustomerController(@Qualifier("tokens") Map <String, ClientSession> tokensMap) {
+    public CustomerController(@Qualifier("tokens") Map <String, ClientSession> tokensMap)  {
         this.tokensMap = tokensMap;
     }
 

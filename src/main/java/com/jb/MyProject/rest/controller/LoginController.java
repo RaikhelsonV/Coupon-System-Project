@@ -14,14 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.UUID;
+
+import static com.example.MyProject.entity.Token.generateToken;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class LoginController {
 
-    private static final int LENGTH_TOKEN = 15;
     private Map<String, ClientSession> tokensMap;
     private UserSystem userSystem;
 
@@ -48,10 +48,5 @@ public class LoginController {
         return  ResponseEntity.ok(clientSession.getRole());
     }
 
-    private static String generateToken() {
-        return UUID.randomUUID()
-                .toString()
-                .replaceAll("-","")
-                .substring(0, LENGTH_TOKEN);
-    }
+
 }

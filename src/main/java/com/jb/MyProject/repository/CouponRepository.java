@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
+    Coupon findExistById(long id);
     List<Coupon> findAllByCompanyName(String name);
     List<Coupon> findAllByDescription(String description);
     List<Coupon> findAllByTitle(String title);

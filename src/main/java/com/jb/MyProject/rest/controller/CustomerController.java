@@ -7,6 +7,7 @@ import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.jb.MyProject.exceptions.InvalidUpdateCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchCustomerException;
+import com.jb.MyProject.service.CouponService;
 import com.jb.MyProject.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -74,7 +75,7 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         CustomerService service = session.getCustomerService();
-        long totalPrice = service.getAllCustomerCouponsTotalPrice();
+        long totalPrice = service.getTotalPriceOfPurchasesCouponsInShoppingCart();
         return ResponseEntity.ok(totalPrice);
     }
 
@@ -85,7 +86,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponService service = session.getCouponService();
         List<Coupon> allCouponsByDescriptionLike = service.getAllCouponsByDescriptionLike(description);
         return ResponseEntity.ok(allCouponsByDescriptionLike);
     }
@@ -97,7 +98,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponService service = session.getCouponService();
         List<Coupon> allCouponsByTittle = service.getAllCouponsByTittle(title);
         return ResponseEntity.ok(allCouponsByTittle);
     }
@@ -109,7 +110,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponService service = session.getCouponService();
         List<Coupon> coupons = service.getAllCouponsByPriceLessThan(price);
         return ResponseEntity.ok(coupons);
     }
@@ -121,7 +122,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponService service = session.getCouponService();
         List<Coupon> coupons = service.getAllByPriceIsGreaterThan(price);
         return ResponseEntity.ok(coupons);
     }
@@ -149,7 +150,7 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         CustomerService service = session.getCustomerService();
-        Coupon coupon = service.toUseCoupon(couponId);
+        Coupon coupon = service.removeCouponFromCustomerShoppingCard(couponId);
         return ResponseEntity.ok(coupon);
     }
 

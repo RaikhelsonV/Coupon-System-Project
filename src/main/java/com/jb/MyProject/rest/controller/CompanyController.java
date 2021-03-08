@@ -8,6 +8,7 @@ import com.jb.MyProject.exceptions.NoSuchCompanyException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.WrongInputDataException;
 import com.jb.MyProject.service.CompanyService;
+import com.jb.MyProject.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class CompanyController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CompanyService service = session.getCompanyService();
+        CouponService service = session.getCouponService();
         Coupon updateCoupon = service.updateCoupon(coupon);
         if (updateCoupon != null) {
             return ResponseEntity.ok(updateCoupon);
@@ -104,9 +105,10 @@ public class CompanyController {
             @PathVariable long couponId) throws NoSuchCouponException, NoSuchCompanyException {
         ClientSession session = getSession(token);
         if (session != null) {
-            CompanyService service = session.getCompanyService();
-            service.deleteCouponById(couponId);
-            return ResponseEntity.ok(service.getAllCoupons());
+            CouponService couponService = session.getCouponService();
+            CompanyService companyService = session.getCompanyService();
+            couponService.deleteCouponById(couponId);
+            return ResponseEntity.ok(companyService.getAllCompanyCoupons());
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

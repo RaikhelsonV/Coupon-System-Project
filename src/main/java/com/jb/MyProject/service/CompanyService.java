@@ -2,32 +2,14 @@ package com.jb.MyProject.service;
 
 import com.jb.MyProject.entity.Company;
 import com.jb.MyProject.entity.Coupon;
-import com.jb.MyProject.exceptions.InvalidUpdateCouponException;
 import com.jb.MyProject.exceptions.NoSuchCompanyException;
-import com.jb.MyProject.exceptions.NoSuchCouponException;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface CompanyService {
+
     void setCompanyId(long companyId);
-
-    Company updateCompany(long id, Company company) throws NoSuchCompanyException;
-
-    Coupon createCoupon(Coupon coupon) throws NoSuchCompanyException;
-
-    Coupon updateCoupon(Coupon coupon) throws InvalidUpdateCouponException, NoSuchCouponException;
-
-    @Transactional
-    void deleteCouponById(long couponId) throws NoSuchCouponException, NoSuchCompanyException;
-
-    List<Coupon> getAllCompanyCoupons();
-
-    List<Coupon> getAllCouponsByCompanyId(long companyId);
-
-    /*general info*/
-    List<Coupon> getAllCoupons();
 
     Company getCompany() throws NoSuchCompanyException;
 
@@ -35,17 +17,23 @@ public interface CompanyService {
 
     Company getCompanyByName(String companyName) throws NoSuchCompanyException;
 
-    List<Coupon> getAllCouponsByCategory(String category);
+    List<Company> getAllCompanies();
 
-    List<Coupon> getAllCouponsByStartDate(LocalDate startDate);
+    Company updateCompany(long id, Company company) throws NoSuchCompanyException;
 
-    List<Coupon> getAllCouponsByEndDate(LocalDate endDate);
+    Company removeCompanyById(long companyId) throws NoSuchCompanyException;
 
-    List<Coupon> getAllCouponsByPriceLessThan(double price);
+    Coupon createCoupon(Coupon coupon) throws NoSuchCompanyException;
 
-    List<Coupon> getAllCouponsByTittle(String title);
+    List<Coupon> getAllCompanyCoupons();
 
-    List<Coupon> getAllCouponsByDescriptionLike(String description);
+    List<Coupon> getAllCouponsByCompanyId(long companyId);
+
+    List<Coupon> getAllCouponsByStartDateAndByCompanyId(LocalDate startDate);
+
+    List<Coupon> getAllCouponsByEndDateAndByCompanyId(LocalDate endDate);
+
+
 
 
 }

@@ -5,7 +5,10 @@ import com.jb.MyProject.exceptions.NoSuchCompanyException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchCustomerException;
 import com.jb.MyProject.exceptions.SystemMalfunctionException;
-import com.jb.MyProject.service.AdminService;
+import com.jb.MyProject.service.CompanyService;
+import com.jb.MyProject.service.CouponService;
+import com.jb.MyProject.service.CustomerService;
+import com.jb.MyProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -36,7 +39,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        CustomerService service = session.getCustomerService();
         List<Customer> customers = service.getAllCustomers();
         return ResponseEntity.ok(customers);
     }
@@ -47,7 +50,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        UserService service = session.getUserService();
         List<User> users = service.getAllUsers();
         return ResponseEntity.ok(users);
     }
@@ -58,7 +61,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        CompanyService service = session.getCompanyService();
         List<Company> companies = service.getAllCompanies();
         return ResponseEntity.ok(companies);
     }
@@ -69,7 +72,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        CouponService service = session.getCouponService();
         List<Coupon> coupons = service.getAllCoupons();
         return ResponseEntity.ok(coupons);
     }
@@ -80,9 +83,9 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
-        Customer customer = service.getCustomer(customerId);
-        service.removeCustomer(customerId);
+        CustomerService service = session.getCustomerService();
+        Customer customer = service.getCustomerById(customerId);
+        service.removeCustomerById(customerId);
         String msg = "The customer was deleted successfully!";
         return ResponseEntity.ok(msg);
     }
@@ -93,7 +96,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        UserService service = session.getUserService();
         service.removeUserCustomer(customerId);
         String msg = "The user was deleted successfully!";
         return ResponseEntity.ok(msg);
@@ -105,9 +108,9 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
-        Company company = service.getCompany(companyId);
-        service.removeCompany(companyId);
+        CompanyService service = session.getCompanyService();
+        Company company = service.getCompanyById(companyId);
+        service.removeCompanyById(companyId);
         return ResponseEntity.ok(company);
     }
 
@@ -117,7 +120,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        UserService service = session.getUserService();
         service.removeUserCompany(companyId);
         String msg = "The user was deleted successfully!";
         return ResponseEntity.ok(msg);
@@ -132,8 +135,8 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
-        Coupon updateCoupon = service.updateCoupon(couponId, coupon);
+        CouponService service = session.getCouponService();
+        Coupon updateCoupon = service.updateCouponById(couponId, coupon);
 
         return ResponseEntity.ok(updateCoupon);
     }
@@ -146,8 +149,8 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
-        service.updateCustomer(customerId, customer);
+        CustomerService service = session.getCustomerService();
+        service.updateCustomer(customer);
 
         return ResponseEntity.ok(customer);
     }
@@ -160,7 +163,7 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
+        CompanyService service = session.getCompanyService();
         service.updateCompany(companyId, company);
 
         return ResponseEntity.ok(company);
@@ -172,9 +175,9 @@ public class AdminController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AdminService service = session.getAdminService();
-        Coupon coupon = service.getCoupon(couponId);
-        service.removeCoupon(couponId);
+        CouponService service = session.getCouponService();
+        Coupon coupon = service.getCouponById(couponId);
+        service.removeCouponById(couponId);
         return ResponseEntity.ok(coupon);
     }
 

@@ -9,7 +9,7 @@ import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchUserException;
 import com.jb.MyProject.exceptions.UnknownRoleException;
 import com.jb.MyProject.service.CompanyService;
-import com.jb.MyProject.service.CustomerService;
+import com.jb.MyProject.service.CouponService;
 import com.jb.MyProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -70,21 +70,21 @@ public class UserController {
 
     @GetMapping("coupon-id/{couponId}")
     public ResponseEntity<Coupon> getCoupon(@PathVariable long couponId) throws NoSuchCouponException {
-        CustomerService service = applicationContext.getBean(CustomerService.class);
-        Coupon coupon = service.getCoupon(couponId);
+        CouponService service = applicationContext.getBean(CouponService.class);
+        Coupon coupon = service.getCouponById(couponId);
         return ResponseEntity.ok(coupon);
     }
 
     @GetMapping("coupons-category/{category}")
     public ResponseEntity<List<Coupon>> getAllCouponsByCategory(@PathVariable String category) {
-        CustomerService service = applicationContext.getBean(CustomerService.class);
+        CouponService service = applicationContext.getBean(CouponService.class);
         List<Coupon> allCouponsByCategory = service.getAllCouponsByCategory(category);
         return ResponseEntity.ok(allCouponsByCategory);
     }
 
     @GetMapping("user/coupons")
     public ResponseEntity<List<Coupon>> getAllCoupons() {
-        UserService service = applicationContext.getBean(UserService.class);
+        CouponService service = applicationContext.getBean(CouponService.class);
         List<Coupon> coupons = service.getAllCoupons();
         return ResponseEntity.ok(coupons);
     }
@@ -92,7 +92,7 @@ public class UserController {
 
     @GetMapping("user/companies")
     public ResponseEntity<List<Company>> getAllCompanies() {
-        UserService service = applicationContext.getBean(UserService.class);
+        CompanyService service = applicationContext.getBean(CompanyService.class);
         List<Company> companies = service.getAllCompanies();
         return ResponseEntity.ok(companies);
     }
@@ -112,8 +112,8 @@ public class UserController {
     }
 
 
-    /*  @GetMapping("/getCompany/{name}")
-      public ResponseEntity<Company> getCompany(@PathVariable String name) throws NoSuchCompanyException {
+    /*  @GetMapping("/getCompanyById/{name}")
+      public ResponseEntity<Company> getCompanyById(@PathVariable String name) throws NoSuchCompanyException {
           CompanyService service = applicationContext.getBean(CompanyService.class);
           Company company = service.getCompanyByName(name);
           return ResponseEntity.ok(company);

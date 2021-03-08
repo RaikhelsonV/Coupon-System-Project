@@ -1,8 +1,9 @@
 package com.jb.MyProject.entity;
 
-import com.jb.MyProject.service.AdminService;
 import com.jb.MyProject.service.CompanyService;
+import com.jb.MyProject.service.CouponService;
 import com.jb.MyProject.service.CustomerService;
+import com.jb.MyProject.service.UserService;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,10 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ClientSession {
     private long lastAccessedMillis;
-    private AdminService adminService;
     private CustomerService customerService;
     private CompanyService companyService;
+    private CouponService couponService;
+    private UserService userService;
     private int role;
 
     public CustomerService getCustomerService() {
@@ -32,12 +34,20 @@ public class ClientSession {
         this.companyService = companyService;
     }
 
-    public AdminService getAdminService() {
-        return adminService;
+    public CouponService getCouponService() {
+        return couponService;
     }
 
-    public void setAdminService(AdminService adminService) {
-        this.adminService = adminService;
+    public void setCouponService(CouponService couponService) {
+        this.couponService = couponService;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     public long getLastAccessedMillis() {

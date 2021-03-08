@@ -1,13 +1,11 @@
 package com.jb.MyProject.service;
 
 import com.jb.MyProject.entity.Company;
-import com.jb.MyProject.entity.Coupon;
 import com.jb.MyProject.entity.Customer;
 import com.jb.MyProject.entity.User;
 import com.jb.MyProject.exceptions.NoSuchUserException;
 import com.jb.MyProject.exceptions.UnknownRoleException;
 import com.jb.MyProject.repository.CompanyRepository;
-import com.jb.MyProject.repository.CouponRepository;
 import com.jb.MyProject.repository.CustomerRepository;
 import com.jb.MyProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +17,16 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private long customerId;
     private UserRepository userRepository;
-    private CouponRepository couponRepository;
-    private CompanyRepository companyRepository;
     private CustomerRepository customerRepository;
+    private CompanyRepository companyRepository;
     private ApplicationContext context;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CouponRepository couponRepository, CompanyRepository companyRepository, CustomerRepository customerRepository, ApplicationContext context) {
+    public UserServiceImpl(UserRepository userRepository, CustomerRepository customerRepository, CompanyRepository companyRepository, ApplicationContext context) {
         this.userRepository = userRepository;
-        this.couponRepository = couponRepository;
-        this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
+        this.companyRepository = companyRepository;
         this.context = context;
     }
 
@@ -45,11 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(String email, String password, String newEmail, String newPassword) throws NoSuchUserException {
-        User user = getUserByEmailAndPassword(email, password);
-        user.setEmail(newEmail);
-        user.setPassword(newPassword);
-        userRepository.save(user);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
@@ -73,22 +65,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUser(String email, String password, String newEmail, String newPassword) throws NoSuchUserException {
+        User user = getUserByEmailAndPassword(email, password);
+        user.setEmail(newEmail);
+        user.setPassword(newPassword);
+        userRepository.save(user);
+    }
+
+
+    @Override
     public void updateUserPassword(String email, String password, String newPassword) throws NoSuchUserException {
 //        User user = getUserByEmailAndPassword(email, password);
 //        user.setPassword(newPassword);
 //        userRepository.save(user);
     }
 
-    ///////////////////////////////
     @Override
-    public List<Coupon> getAllCoupons() {
-        return couponRepository.findAll();
+    public void removeUserCompany(long clientId) {
+        List<User> users = userRepository.findAll();
+        for (int i = 1; i < users.size(); i++) {
+            User user = users.get(i);
+            long id = user.getClient().getId();
+            if (id == clientId) {
+                long userId = user.getId();
+                Optional<User> optionalUser = userRepository.findById(userId);
+                User relevantUser = optionalUser.get();
+                Optional<Company> optionalCompany = companyRepository.findById(clientId);
+                Company company = optionalCompany.get();
+                companyRepository.delete(company);
+                System.out.println("company was deleted successfully!");
+                userRepository.delete(relevantUser);
+                System.out.println("user was deleted successfully!");
+                break;
+            }
+        }
     }
 
     @Override
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll();
+    public void removeUserCustomer(long clientId)  {
+        List<User> users = userRepository.findAll();
+        for (int i = 1; i < users.size(); i++) {
+            User user = users.get(i);
+            long id = user.getClient().getId();
+            if (id == clientId) {
+                long userId = user.getId();
+                Optional<User> optionalUser = userRepository.findById(userId);
+                User relevantUser = optionalUser.get();
+                Optional<Customer> optionalCustomer = customerRepository.findById(clientId);
+                Customer customer = optionalCustomer.get();
+                customerRepository.delete(customer);
+                System.out.println("customer was deleted successfully!");
+                userRepository.delete(relevantUser);
+                System.out.println("user was deleted successfully!");
+                break;
+            }
+        }
     }
-
 
 }

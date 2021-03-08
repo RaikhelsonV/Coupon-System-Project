@@ -4,7 +4,6 @@ import com.jb.MyProject.entity.*;
 import com.jb.MyProject.exceptions.InvalidLoginException;
 import com.jb.MyProject.exceptions.InvalidSessionTException;
 import com.jb.MyProject.repository.UserRepository;
-import com.jb.MyProject.service.AdminService;
 import com.jb.MyProject.service.CompanyService;
 import com.jb.MyProject.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;

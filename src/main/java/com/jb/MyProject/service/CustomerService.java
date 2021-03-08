@@ -15,32 +15,24 @@ public interface CustomerService {
 
     Customer getCustomerById(long customerId) throws NoSuchCustomerException;
 
+    List<Customer> getAllCustomers();
+
     Customer getCustomerByLastName(String customerLastName);
 
     Customer updateCustomer(Customer customer) throws NoSuchCustomerException;
 
-    Coupon toUseCoupon(long couponId) throws NoSuchCouponException;
+    Customer removeCustomerById(long customerId) throws NoSuchCustomerException;
 
     Coupon purchaseCoupon(long couponId) throws NoSuchCouponException, AlreadyPurchaseCouponException;
 
     List<Coupon> getAllCustomerCoupons();
 
-    long getAllCustomerCouponsTotalPrice();
+    long getTotalPriceOfPurchasesCouponsInShoppingCart();
 
     Coupon addAmountCouponsInShoppingBag(long id, int amount) throws NoSuchCouponException;
 
-    /*general*/
-    List<Coupon> getAllCouponsByCategory(String category);
+    long getAmountOfPurchasesCouponsInShoppingCard();
 
-    List<Coupon> getAllCouponsByPriceLessThan(double price);
-
-    List<Coupon> getAllByPriceIsGreaterThan(double price);
-
-    List<Coupon> getAllCouponsByTittle(String title);
-
-    List<Coupon> getAllCouponsByDescriptionLike(String description);
-
-    Coupon getCoupon(long couponId) throws NoSuchCouponException;
-
+    Coupon removeCouponFromCustomerShoppingCard(long couponId) throws NoSuchCouponException;
 
 }

@@ -1,9 +1,6 @@
 package com.jb.MyProject.entity;
 
-import com.jb.MyProject.service.CompanyService;
-import com.jb.MyProject.service.CouponService;
-import com.jb.MyProject.service.CustomerService;
-import com.jb.MyProject.service.UserService;
+import com.jb.MyProject.service.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -16,6 +13,7 @@ public class ClientSession {
     private CompanyService companyService;
     private CouponService couponService;
     private UserService userService;
+    private CouponShoppingCartService couponShoppingCartService;
     private int role;
 
     public CustomerService getCustomerService() {
@@ -48,6 +46,14 @@ public class ClientSession {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public CouponShoppingCartService getCouponShoppingCartService() {
+        return couponShoppingCartService;
+    }
+
+    public void setCouponShoppingCartService(CouponShoppingCartService couponShoppingCartService) {
+        this.couponShoppingCartService = couponShoppingCartService;
     }
 
     public long getLastAccessedMillis() {

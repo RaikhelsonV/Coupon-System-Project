@@ -5,20 +5,18 @@ public class CouponShoppingCart {
     private String title;
     private String description;
     private String category;
-    private double price;
     private String imageURL;
-    private long amountPurchasedCoupons;
-    private long pricePurchasedCoupons;
+    private double amountPurchasedCoupons;
+    private double pricePurchasedCoupons;
 
     public CouponShoppingCart() {
     }
 
-    public CouponShoppingCart(long id, String title, String description, String category, double price, String imageURL, long amountPurchasedCoupons, long pricePurchasedCoupons) {
+    public CouponShoppingCart(long id, String title, String description, String category, String imageURL, double amountPurchasedCoupons, double pricePurchasedCoupons) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.price = price;
         this.imageURL = imageURL;
         this.amountPurchasedCoupons = amountPurchasedCoupons;
         this.pricePurchasedCoupons = pricePurchasedCoupons;
@@ -56,14 +54,6 @@ public class CouponShoppingCart {
         this.category = category;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public String getImageURL() {
         return imageURL;
     }
@@ -72,19 +62,19 @@ public class CouponShoppingCart {
         this.imageURL = imageURL;
     }
 
-    public long getAmountPurchasedCoupons() {
+    public double getAmountPurchasedCoupons() {
         return amountPurchasedCoupons;
     }
 
-    public void setAmountPurchasedCoupons(long amountPurchasedCoupons) {
+    public void setAmountPurchasedCoupons(double amountPurchasedCoupons) {
         this.amountPurchasedCoupons = amountPurchasedCoupons;
     }
 
-    public long getPricePurchasedCoupons() {
+    public double getPricePurchasedCoupons() {
         return pricePurchasedCoupons;
     }
 
-    public void setPricePurchasedCoupons(long pricePurchasedCoupons) {
+    public void setPricePurchasedCoupons(double pricePurchasedCoupons) {
         this.pricePurchasedCoupons = pricePurchasedCoupons;
     }
 
@@ -95,7 +85,6 @@ public class CouponShoppingCart {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
-                ", price=" + price +
                 ", imageURL='" + imageURL + '\'' +
                 ", amountPurchasedCoupons=" + amountPurchasedCoupons +
                 ", pricePurchasedCoupons=" + pricePurchasedCoupons +

@@ -1,7 +1,6 @@
 package com.jb.MyProject.service;
 
 import com.jb.MyProject.entity.Coupon;
-import com.jb.MyProject.entity.CouponShoppingCart;
 import com.jb.MyProject.entity.Customer;
 import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
@@ -27,14 +26,10 @@ public interface CustomerService {
 
     Coupon purchaseCoupon(long couponId) throws NoSuchCouponException, AlreadyPurchaseCouponException;
 
-    Set getAllCustomerCoupons();
-
-    long getTotalPriceOfPurchasesCouponsInShoppingCart();
-
-    long getAmountOfPurchasesCouponsInShoppingCard(long couponId);
-
     Coupon removeCouponFromCustomerShoppingCard(long couponId) throws NoSuchCouponException;
 
-    Set<CouponShoppingCart> formationTableCouponsInShoppingCart();
+    Set getAllCustomerCoupons();
+
+
 
 }

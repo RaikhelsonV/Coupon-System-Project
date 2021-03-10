@@ -8,6 +8,7 @@ import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchCustomerException;
 import com.jb.MyProject.service.CouponService;
+import com.jb.MyProject.service.CouponShoppingCartService;
 import com.jb.MyProject.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -74,7 +75,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponShoppingCartService service = session.getCouponShoppingCartService();
         Set<CouponShoppingCart> couponsInShoppingCart = service.formationTableCouponsInShoppingCart();
         return ResponseEntity.ok(couponsInShoppingCart);
     }
@@ -85,21 +86,11 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CustomerService service = session.getCustomerService();
+        CouponShoppingCartService service = session.getCouponShoppingCartService();
         long totalPrice = service.getTotalPriceOfPurchasesCouponsInShoppingCart();
         return ResponseEntity.ok(totalPrice);
     }
-    @GetMapping("customer-coupons-purchased-amount/{token}/{couponId}")
-    public ResponseEntity<Long> getAllCustomerCouponsPurchasedAmount(@PathVariable String token,
-                                                                     @PathVariable long couponId) {
-        ClientSession session = getSession(token);
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        CustomerService service = session.getCustomerService();
-        long totalPrice = service.getAmountOfPurchasesCouponsInShoppingCard(couponId);
-        return ResponseEntity.ok(totalPrice);
-    }
+
 
     @GetMapping("customer/{token}/coupons-description/{description}")
     public ResponseEntity<List<Coupon>> getAllCouponsByDescriptionLike(@PathVariable String token,

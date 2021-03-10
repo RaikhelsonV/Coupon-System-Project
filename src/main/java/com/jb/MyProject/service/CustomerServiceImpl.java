@@ -1,7 +1,6 @@
 package com.jb.MyProject.service;
 
 import com.jb.MyProject.entity.Coupon;
-import com.jb.MyProject.entity.CouponShoppingCart;
 import com.jb.MyProject.entity.Customer;
 import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
@@ -112,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", couponId));
     }
+
     @Override
     public Set getAllCustomerCoupons() {
         return new HashSet(couponRepository.findAllByCustomerId(customerId));
@@ -134,7 +134,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             customer.add(coupon);         /*  add is adding as well customer to coupon's List of Customers*/
             coupon.setAmount(coupon.getAmount() - 1);/*-1 coupon to the coupon's repository*/
-            amountPurchasedCoupons(customer, couponId);
+            calculateAmountPurchasedCoupon(customer, couponId);
             couponRepository.save(coupon);
             customerRepository.save(customer);    /*saving new owner of the coupon to the customer's repository*/
             return coupon;
@@ -143,7 +143,7 @@ public class CustomerServiceImpl implements CustomerService {
         throw new NoSuchCouponException(String.format("There is no coupon with this id:%d", couponId));
     }
 
-    private void amountPurchasedCoupons(Customer customer, long couponId) {
+    private void calculateAmountPurchasedCoupon(Customer customer, long couponId) {
         Map<Long, Long> amountPurchasedCoupons = customer.getAmountPurchasedCoupons();
         if (!amountPurchasedCoupons.containsKey(couponId)) {
             amountPurchasedCoupons.put(couponId, (long) 1);
@@ -151,56 +151,6 @@ public class CustomerServiceImpl implements CustomerService {
             amountPurchasedCoupons.put(couponId, amountPurchasedCoupons.get(couponId) + 1);
         }
     }
-
-
-     @Override
-    public Set<CouponShoppingCart> formationTableCouponsInShoppingCart() {
-        Optional<Customer> optCustomer = customerRepository.findById(this.customerId);
-        Customer customer = optCustomer.get();
-        HashSet<Coupon> coupons = new HashSet(couponRepository.findAllByCustomerId(customerId));
-        Map<Long, Long> amountPurchasedCoupons = customer.getAmountPurchasedCoupons();
-
-        Set<CouponShoppingCart> couponsShoppingCart = new HashSet<>();
-        for (Coupon coupon : coupons) {
-            for (Map.Entry<Long, Long> entry : amountPurchasedCoupons.entrySet()) {
-                if (coupon.getId() == entry.getKey()) {
-                    couponsShoppingCart.add(createCouponInShoppingCart(coupon, amountPurchasedCoupons.get(entry.getKey())));
-                }
-            }
-        }
-
-        return couponsShoppingCart;
-    }
-
-    private CouponShoppingCart createCouponInShoppingCart(Coupon coupon, long amountPurchasedCoupons) {
-        CouponShoppingCart couponShoppingCart = new CouponShoppingCart();
-        couponShoppingCart.setId(coupon.getId());
-        couponShoppingCart.setTitle(coupon.getTitle());
-        couponShoppingCart.setDescription(coupon.getDescription());
-        couponShoppingCart.setCategory(coupon.getCategory());
-        couponShoppingCart.setPrice(coupon.getPrice());
-        couponShoppingCart.setImageURL(coupon.getImageURL());
-        couponShoppingCart.setAmountPurchasedCoupons(amountPurchasedCoupons);
-        return couponShoppingCart;
-    }
-    @Override
-    public long getTotalPriceOfPurchasesCouponsInShoppingCart() {
-        List<Coupon> coupons = couponRepository.findAllByCustomerId(customerId);
-        long sum = 0;
-        for (int i = 0; i < coupons.size(); i++) {
-            sum += (long) (coupons.get(i).getPrice());
-        }
-        return sum;
-    }
-    @Override
-    public long getAmountOfPurchasesCouponsInShoppingCard(long couponId) {
-        Optional<Customer> optCustomer = customerRepository.findById(this.customerId);
-        Customer customer = optCustomer.get();
-        Map<Long, Long> amountPurchasedCoupons = customer.getAmountPurchasedCoupons();
-        return amountPurchasedCoupons.get(couponId);
-
-    }
-
 
 
 

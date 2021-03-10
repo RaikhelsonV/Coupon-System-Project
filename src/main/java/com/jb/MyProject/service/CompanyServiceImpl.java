@@ -42,6 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
         Optional<Company> optionalCompany = companyRepository.findById(companyId);
         return optionalCompany.get();
     }
+
     @Override
     public Company getCompanyById(long companyId) throws NoSuchCompanyException {
         Optional<Company> optionalCompany = companyRepository.findById(companyId);
@@ -51,15 +52,15 @@ public class CompanyServiceImpl implements CompanyService {
         throw new NoSuchCompanyException(String.format("There is no company with this id:%d", companyId));
     }
 
-
     @Override
     public Company getCompanyByName(String companyName) throws NoSuchCompanyException {
         Optional<Company> optionalCompany = companyRepository.findById(this.companyId);
         if (optionalCompany.isPresent()) {
             return optionalCompany.get();
         }
-        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", this.companyId));
+        throw new NoSuchCompanyException(String.format("There is no company with this name:%s", companyName));
     }
+
     @Override
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
@@ -67,15 +68,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Coupon> getAllCompanyCoupons() {
-        List<Coupon> coupons = couponRepository.findAllByCompanyId(companyId);
-        return coupons;
+        return couponRepository.findAllByCompanyId(companyId);
     }
 
     @Override
     public List<Coupon> getAllCouponsByCompanyId(long companyId) {
         return couponRepository.findAllByCompanyId(companyId);
     }
-
 
     @Override
     public Company updateCompany(long id, Company company) throws NoSuchCompanyException {
@@ -104,23 +103,23 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional
     public Coupon createCoupon(Coupon coupon) throws NoSuchCompanyException {
         Optional<Company> optionalCompany = companyRepository.findById(companyId);
-        if (!optionalCompany.isPresent()) {
-            throw new NoSuchCompanyException(String.format("There is no company with such id:%d " + optionalCompany.get().getId()));
-        }
-        Company company = optionalCompany.get();
-        if (company.getCoupons() != null) {
-            for (Coupon existCoupon : company.getCoupons()) {
-                if (coupon.similarCoupon(existCoupon)) {
-                    existCoupon.setAmount(existCoupon.getAmount() + coupon.getAmount());
-                    existCoupon.setCompanyId(companyId);
-                    return couponRepository.save(existCoupon);
+        if (optionalCompany.isPresent()) {
+            Company company = optionalCompany.get();
+            if (company.getCoupons() != null) {
+                for (Coupon existCoupon : company.getCoupons()) {
+                    if (coupon.similarCoupon(existCoupon)) {
+                        existCoupon.setAmount(existCoupon.getAmount() + coupon.getAmount());
+                        existCoupon.setCompanyId(companyId);
+                        return couponRepository.save(existCoupon);
+                    }
                 }
             }
+            coupon.setCompanyId(companyId);
+            company.add(coupon);
+            return couponRepository.save(coupon);
         }
-        coupon.setCompanyId(companyId);
-        company.add(coupon);
-        return couponRepository.save(coupon);
-    }
+        throw new NoSuchCompanyException(String.format("There is no company with such id:%d " + optionalCompany.get().getId()));
+      }
 
     @Override
     public List<Coupon> getAllCouponsByEndDateAndByCompanyId(LocalDate endDate) {
@@ -143,8 +142,5 @@ public class CompanyServiceImpl implements CompanyService {
         }
         return coupons;
     }
-
-
-
 }
 

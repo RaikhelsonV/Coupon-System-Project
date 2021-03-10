@@ -33,10 +33,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmailAndPassword(String email, String password) throws NoSuchUserException {
         Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
-        if (!optionalUser.isPresent()) {
-            throw new NoSuchUserException(String.format("User with such email %s is not exist!", email));
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
         }
-        return optionalUser.get();
+        throw new NoSuchUserException(String.format("User with such email %s is not exist!", email));
     }
 
     @Override
@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(String email, String password, int role) throws NoSuchUserException, UnknownRoleException {
-        Optional<User> optUser = userRepository.findByEmailAndPassword(email, password);
-        if (optUser.isPresent()) {
+        Optional<User> optionalUser = userRepository.findByEmailAndPassword(email, password);
+        if (optionalUser.isPresent()) {
             throw new NoSuchUserException(String.format("User with such email %s is already exist.", email));
         }
         User user = new User(email, password, role);
@@ -71,7 +71,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(newPassword);
         userRepository.save(user);
     }
-
 
     @Override
     public void updateUserPassword(String email, String password, String newPassword) throws NoSuchUserException {
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeUserCustomer(long clientId)  {
+    public void removeUserCustomer(long clientId) {
         List<User> users = userRepository.findAll();
         for (int i = 1; i < users.size(); i++) {
             User user = users.get(i);

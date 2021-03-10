@@ -167,14 +167,13 @@ public class Coupon {
                 ", title='" + title + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
-                ", category=" + category +
+                ", category='" + category + '\'' +
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", imageURL='" + imageURL + '\'' +
                 '}';
     }
-
 }
 
 

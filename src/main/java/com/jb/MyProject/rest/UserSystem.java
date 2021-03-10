@@ -6,6 +6,7 @@ import com.jb.MyProject.exceptions.InvalidSessionTException;
 import com.jb.MyProject.repository.UserRepository;
 import com.jb.MyProject.service.CompanyService;
 import com.jb.MyProject.service.CustomerService;
+import com.jb.MyProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -72,10 +73,10 @@ public class UserSystem {
     }
 
     private ClientSession getAdminSession() {
-        AdminService adminService = context.getBean(AdminService.class);
+        UserService userService = context.getBean(UserService.class);
         ClientSession clientSession = context.getBean(ClientSession.class);
         clientSession.setRole(3);
-        clientSession.setAdminService(adminService);
+        clientSession.setUserService(userService);
         clientSession.accessed();
         return clientSession;
     }

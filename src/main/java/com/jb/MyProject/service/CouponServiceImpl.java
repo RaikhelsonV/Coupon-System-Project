@@ -45,6 +45,7 @@ public class CouponServiceImpl implements CouponService {
     public List<Coupon> getAllCouponsByPriceLessThan(double price) {
         return couponRepository.findAllByPriceLessThan(price);
     }
+
     @Override
     public List<Coupon> getAllByPriceIsGreaterThan(double price) {
         return couponRepository.findAllByPriceIsGreaterThan(price);
@@ -59,27 +60,29 @@ public class CouponServiceImpl implements CouponService {
     public List<Coupon> getAllCouponsByDescriptionLike(String description) {
         return couponRepository.findAllByDescription(description);
     }
+
     @Override
     public List<Coupon> getAllCouponsByCategory(String category) {
         return couponRepository.findAllByCategory(category);
     }
+
     @Override
     public Coupon updateCoupon(Coupon coupon) throws NoSuchCouponException {
         Optional<Coupon> optionalCoupon = couponRepository.findById(coupon.getId());
-        if (!optionalCoupon.isPresent()) {
-            throw new NoSuchCouponException(String.format("There is no coupon with such id: " + coupon.getId()));
+        if (optionalCoupon.isPresent()) {
+            Coupon updatedCoupon = optionalCoupon.get();
+            updatedCoupon.setTitle(coupon.getTitle());
+            updatedCoupon.setStartDate(coupon.getStartDate());
+            updatedCoupon.setEndDate(coupon.getEndDate());
+            updatedCoupon.setCategory(coupon.getCategory());
+            updatedCoupon.setAmount(coupon.getAmount());
+            updatedCoupon.setDescription(coupon.getDescription());
+            updatedCoupon.setPrice(coupon.getPrice());
+            updatedCoupon.setImageURL(coupon.getImageURL());
+            couponRepository.save(updatedCoupon);
+            return updatedCoupon;
         }
-        Coupon updatedCoupon = optionalCoupon.get();
-        updatedCoupon.setTitle(coupon.getTitle());
-        updatedCoupon.setStartDate(coupon.getStartDate());
-        updatedCoupon.setEndDate(coupon.getEndDate());
-        updatedCoupon.setCategory(coupon.getCategory());
-        updatedCoupon.setAmount(coupon.getAmount());
-        updatedCoupon.setDescription(coupon.getDescription());
-        updatedCoupon.setPrice(coupon.getPrice());
-        updatedCoupon.setImageURL(coupon.getImageURL());
-        couponRepository.save(updatedCoupon);
-        return updatedCoupon;
+        throw new NoSuchCouponException(String.format("There is no coupon with such id:%d", coupon.getId()));
     }
 
     @Override
@@ -97,7 +100,7 @@ public class CouponServiceImpl implements CouponService {
             existCoupon.setImageURL(coupon.getImageURL());
             return couponRepository.save(existCoupon);
         }
-        throw new NoSuchCouponException(String.format("There is not coupon with such%d", coupon.getId()));
+        throw new NoSuchCouponException(String.format("There is not coupon with such id:%d", id));
     }
 
 
@@ -118,7 +121,8 @@ public class CouponServiceImpl implements CouponService {
             company.setCoupons(coupons);
             couponRepository.deleteById(couponId);
             System.out.println("Coupon was deleted successfully!");
-        } else throw new NoSuchCouponException(String.format("Coupon does not exist with id%d", couponId));
+        }
+        throw new NoSuchCouponException(String.format("Coupon does not exist with such id:%id", couponId));
     }
 
     @Override

@@ -2,9 +2,9 @@ package com.jb.MyProject.rest.controller;
 
 import com.jb.MyProject.entity.ClientSession;
 import com.jb.MyProject.entity.Coupon;
+import com.jb.MyProject.entity.CouponShoppingCart;
 import com.jb.MyProject.entity.Customer;
 import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
-import com.jb.MyProject.exceptions.InvalidUpdateCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchCustomerException;
 import com.jb.MyProject.service.CouponService;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200"}, allowCredentials = "true")
@@ -58,14 +59,24 @@ public class CustomerController {
     }
 
     @GetMapping("customer-coupons/{token}")
-    public ResponseEntity<List<Coupon>> getAllCustomerCoupons(@PathVariable String token) {
+    public ResponseEntity<Set> getAllCustomerCoupons(@PathVariable String token) {
         ClientSession session = getSession(token);
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         CustomerService service = session.getCustomerService();
-        List<Coupon> allCustomerCoupons = service.getAllCustomerCoupons();
+        Set allCustomerCoupons = service.getAllCustomerCoupons();
         return ResponseEntity.ok(allCustomerCoupons);
+    }
+    @GetMapping("customer-coupons-shopping-cart/{token}")
+    public ResponseEntity<Set> formationTableCouponsInShoppingCart(@PathVariable String token) {
+        ClientSession session = getSession(token);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        CustomerService service = session.getCustomerService();
+        Set<CouponShoppingCart> couponsInShoppingCart = service.formationTableCouponsInShoppingCart();
+        return ResponseEntity.ok(couponsInShoppingCart);
     }
 
     @GetMapping("customer-coupons-price/{token}")
@@ -76,6 +87,17 @@ public class CustomerController {
         }
         CustomerService service = session.getCustomerService();
         long totalPrice = service.getTotalPriceOfPurchasesCouponsInShoppingCart();
+        return ResponseEntity.ok(totalPrice);
+    }
+    @GetMapping("customer-coupons-purchased-amount/{token}/{couponId}")
+    public ResponseEntity<Long> getAllCustomerCouponsPurchasedAmount(@PathVariable String token,
+                                                                     @PathVariable long couponId) {
+        ClientSession session = getSession(token);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        CustomerService service = session.getCustomerService();
+        long totalPrice = service.getAmountOfPurchasesCouponsInShoppingCard(couponId);
         return ResponseEntity.ok(totalPrice);
     }
 
@@ -168,19 +190,5 @@ public class CustomerController {
         return ResponseEntity.ok(coupon);
     }
 
-    @PutMapping("{token}/change-amount/{couponId}/{amount}")
-    public ResponseEntity<Coupon> changeAmount(@PathVariable String token, @PathVariable long couponId,
-                                               @PathVariable int amount) throws InvalidUpdateCouponException, NoSuchCouponException {
-        ClientSession session = getSession(token);
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        CustomerService service = session.getCustomerService();
-        Coupon updateCoupon = service.addAmountCouponsInShoppingBag(couponId, amount);
-        if (updateCoupon != null) {
-            return ResponseEntity.ok(updateCoupon);
-        }
-        throw new InvalidUpdateCouponException("Failed to update coupon.");
-    }
 
 }

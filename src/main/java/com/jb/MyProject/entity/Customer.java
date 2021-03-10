@@ -4,7 +4,9 @@ import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "customer")
@@ -18,8 +20,12 @@ public class Customer extends Client {
             inverseJoinColumns = @JoinColumn(name = "coupon_id"))
     private List<Coupon> coupons;
 
+    @ElementCollection
+    private Map<Long,Long> amountPurchasedCoupons;
+
     public Customer() {
         this.coupons = new ArrayList<>();
+        this.amountPurchasedCoupons = new HashMap<>();
     }
 
     public Customer(long id) {
@@ -59,12 +65,21 @@ public class Customer extends Client {
         this.coupons = coupons;
     }
 
+    public Map<Long, Long> getAmountPurchasedCoupons() {
+        return amountPurchasedCoupons;
+    }
+
+    public void setAmountPurchasedCoupons(Map<Long, Long> amountPurchasedCoupons) {
+        this.amountPurchasedCoupons = amountPurchasedCoupons;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", coupons=" + coupons +
+                ", amountPurchasedCoupons=" + amountPurchasedCoupons +
                 '}';
     }
 }

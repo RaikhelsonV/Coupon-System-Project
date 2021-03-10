@@ -5,6 +5,7 @@ import com.jb.MyProject.exceptions.InvalidLoginException;
 import com.jb.MyProject.exceptions.InvalidSessionTException;
 import com.jb.MyProject.repository.UserRepository;
 import com.jb.MyProject.service.CompanyService;
+import com.jb.MyProject.service.CouponService;
 import com.jb.MyProject.service.CustomerService;
 import com.jb.MyProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import java.util.Optional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class UserSystem {
-
+    private static final String ADMIN_EMAIL = "admin@mail";
+    private static final String ADMIN_PASSWORD = "111";
     private ApplicationContext context;
     private UserRepository userRepository;
     private Thread dailyTask;
@@ -59,10 +61,7 @@ public class UserSystem {
         }
         Client client = optionalUser.get().getClient();
 
-        String adminEmail = "admin@mail";
-        String adminPassword = "111";
-
-        if (email.equals(adminEmail) && password.equals(adminPassword)) {
+        if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
             return getAdminSession();
         } else if (client instanceof Customer) {
             return getCustomerSession(client);
@@ -73,10 +72,12 @@ public class UserSystem {
     }
 
     private ClientSession getAdminSession() {
-        UserService userService = context.getBean(UserService.class);
         ClientSession clientSession = context.getBean(ClientSession.class);
         clientSession.setRole(3);
-        clientSession.setUserService(userService);
+        clientSession.setCompanyService(context.getBean(CompanyService.class));
+        clientSession.setCouponService(context.getBean(CouponService.class));
+        clientSession.setCustomerService(context.getBean(CustomerService.class));
+        clientSession.setUserService(context.getBean(UserService.class));
         clientSession.accessed();
         return clientSession;
     }

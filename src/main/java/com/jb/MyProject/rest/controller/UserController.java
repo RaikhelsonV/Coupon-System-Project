@@ -82,13 +82,6 @@ public class UserController {
         return ResponseEntity.ok(allCouponsByCategory);
     }
 
-    @GetMapping("user/coupons")
-    public ResponseEntity<List<Coupon>> getAllCoupons() {
-        CouponService service = applicationContext.getBean(CouponService.class);
-        List<Coupon> coupons = service.getAllCoupons();
-        return ResponseEntity.ok(coupons);
-    }
-
 
     @GetMapping("user/companies")
     public ResponseEntity<List<Company>> getAllCompanies() {

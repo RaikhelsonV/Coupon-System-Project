@@ -19,7 +19,7 @@ public interface CompanyService {
 
     List<Company> getAllCompanies();
 
-    Company updateCompany(long id, Company company) throws NoSuchCompanyException;
+    Company updateCompany(Company company) throws NoSuchCompanyException;
 
     Company removeCompanyById(long companyId) throws NoSuchCompanyException;
 

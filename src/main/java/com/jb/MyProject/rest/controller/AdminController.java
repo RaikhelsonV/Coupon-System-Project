@@ -155,16 +155,15 @@ public class AdminController {
         return ResponseEntity.ok(customer);
     }
 
-    @PutMapping("admin/{token}/update-company/{companyId}")
+    @PutMapping("admin/{token}/update-company")
     public ResponseEntity<Company> updateCompany(@PathVariable String token,
-                                                 @PathVariable long companyId,
                                                  @RequestBody Company company) throws NoSuchCompanyException {
         ClientSession session = getSession(token);
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         CompanyService service = session.getCompanyService();
-        service.updateCompany(companyId, company);
+        service.updateCompany( company);
 
         return ResponseEntity.ok(company);
     }

@@ -8,7 +8,6 @@ import com.jb.MyProject.exceptions.AlreadyPurchaseCouponException;
 import com.jb.MyProject.exceptions.NoSuchCouponException;
 import com.jb.MyProject.exceptions.NoSuchCustomerException;
 import com.jb.MyProject.service.CouponService;
-import com.jb.MyProject.service.CouponShoppingCartService;
 import com.jb.MyProject.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -75,7 +74,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CouponShoppingCartService service = session.getCouponShoppingCartService();
+        CustomerService service = session.getCustomerService();
         Set<CouponShoppingCart> couponsInShoppingCart = service.formationTableCouponsInShoppingCart();
         return ResponseEntity.ok(couponsInShoppingCart);
     }
@@ -86,7 +85,7 @@ public class CustomerController {
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        CouponShoppingCartService service = session.getCouponShoppingCartService();
+        CustomerService service = session.getCustomerService();
         long totalPrice = service.getTotalPriceOfPurchasesCouponsInShoppingCart();
         return ResponseEntity.ok(totalPrice);
     }

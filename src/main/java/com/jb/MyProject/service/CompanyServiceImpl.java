@@ -77,15 +77,15 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company updateCompany(long id, Company company) throws NoSuchCompanyException {
-        Optional<Company> optionalCompany = companyRepository.findById(id);
+    public Company updateCompany(Company company) throws NoSuchCompanyException {
+        Optional<Company> optionalCompany = companyRepository.findById(company.getId());
         if (optionalCompany.isPresent()) {
             Company existCompany = optionalCompany.get();
             existCompany.setName(company.getName());
             existCompany.setImageURL(company.getImageURL());
             return companyRepository.save(existCompany);
         }
-        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", id));
+        throw new NoSuchCompanyException(String.format("There is no company with this id:%d", company.getId()));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class CompanyServiceImpl implements CompanyService {
             return couponRepository.save(coupon);
         }
         throw new NoSuchCompanyException(String.format("There is no company with such id:%d " + optionalCompany.get().getId()));
-      }
+    }
 
     @Override
     public List<Coupon> getAllCouponsByEndDateAndByCompanyId(LocalDate endDate) {

@@ -13,7 +13,6 @@ public class ClientSession {
     private CompanyService companyService;
     private CouponService couponService;
     private UserService userService;
-    private CouponShoppingCartService couponShoppingCartService;
     private int role;
 
     public CustomerService getCustomerService() {
@@ -46,14 +45,6 @@ public class ClientSession {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    public CouponShoppingCartService getCouponShoppingCartService() {
-        return couponShoppingCartService;
-    }
-
-    public void setCouponShoppingCartService(CouponShoppingCartService couponShoppingCartService) {
-        this.couponShoppingCartService = couponShoppingCartService;
     }
 
     public long getLastAccessedMillis() {

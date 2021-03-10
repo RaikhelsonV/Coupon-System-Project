@@ -55,16 +55,15 @@ public class CompanyController {
         return ResponseEntity.ok(allCompanyCoupons);
     }
 
-    @PutMapping("{token}/update-company/{companyId}")
+    @PutMapping("{token}/update-company")
     public ResponseEntity<Company> updateCompany(@PathVariable String token,
-                                                 @PathVariable long companyId,
                                                  @RequestBody Company company) throws NoSuchCompanyException {
         ClientSession session = getSession(token);
         if (session == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         CompanyService service = session.getCompanyService();
-        service.updateCompany(companyId, company);
+        service.updateCompany(company);
         return ResponseEntity.ok(company);
     }
 
